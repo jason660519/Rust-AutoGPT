@@ -1,0 +1,39 @@
+[package]
+name = "auto_gippity"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+# 用於從 .env 文件加載環境變量的庫
+dotenv = "0.15.0"
+
+# 用於發送HTTP請求的非常強大的非同步HTTP客戶端
+reqwest = { version = "0.12.4", features = ["json"] }
+
+# 一個高效的、強類型的序列化庫，支持 Rust 以和 JSON 和其他格式進行序列化和反序列化
+serde = { version = "1.0.160", features = ["derive"] }
+
+# 用於編碼和解碼 JSON數據的庫
+serde_json = "1.0.96"
+
+# Rust 的異步運行時，支持多種異步功能，比如異步IO
+tokio = { version = "1.28.0", features = ["full"] }
+
+# 提供跨平台TUI（終端用戶界面）功能的庫
+crossterm = "0.26.1"
+
+# 用於定義並實現異步特徵（traits）的庫
+async-trait = "0.1.68"
+
+# 提供在默認瀏覽器中打開 URL 的功能
+webbrowser = "0.8.9"
+
+# 提供強大的自動生成 Enum 的擴展，比如EnumIter和EnumString等
+strum = "0.24.1"
+
+# Strum擴展的宏支持，用於自動生成 Enum 相關的代碼
+strum_macros = "0.24.3"
+
+# 提供AI相關功能的一個庫
+ai_functions = "0.1.1"
