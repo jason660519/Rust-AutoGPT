@@ -1,5 +1,4 @@
 // 引入模組中的幾個函數，用來處理 AI 任務的請求
-
 use crate::ai_functions::aifunc_backend::{
     print_backend_webserver_code, print_fixed_code, print_improved_webserver_code,
     print_rest_api_endpoints,
@@ -10,24 +9,32 @@ use crate::helpers::general::{
 };
 
 // 引入輔助函式,用於檢查HTTP狀態碼、讀取程式碼模板內容、讀取主要執行程式的內容、儲存 API 端點和後端程式碼,以及定義網頁伺服器專案的路徑。
-
 use crate::helpers::command_line::{confirm_safe_code, PrintCommand};
 use crate::helpers::general::ai_task_request;
 use crate::models::agent_basic::basic_agent::{AgentState, BasicAgent};
 use crate::models::agents::agent_traits::{FactSheet, RouteObject, SpecialFunctions};
 
+
+// 引入一些外部的 crate 和標準函式庫模組,包括用於非同步程式設計的 async_trait,
+// 用於發送 HTTP 請求的 reqwest,用於執行命令列程式的 process 模組,以及用於處理時間的 Duration 和 tokio 的 time 模組。
 use async_trait::async_trait;
 use reqwest::Client;
 use std::process::{Command, Stdio};
 use std::time::Duration;
 use tokio::time;
 
+
+
+// 定義 AgentBackendDeveloper 的結構體。包含 agent 的基本屬性、程式錯誤訊息和錯誤計數。
 #[derive(Debug)]
 pub struct AgentBackendDeveloper {
     attributes: BasicAgent,
     bug_errors: Option<String>,
     bug_count: u8,
 }
+
+
+// new 函式用於創建一個新的 AgentBackendDeveloper 實例,初始化它的屬性,包括目標、職位、狀態和記憶體。
 
 impl AgentBackendDeveloper {
     pub fn new() -> Self {
@@ -45,6 +52,9 @@ impl AgentBackendDeveloper {
         }
     }
 
+
+// 這裡定義了一些 AgentBackendDeveloper 的非同步方法,用於生成初始後端程式碼、改進後端程式碼、修復程式碼錯誤,
+// 以及提取 REST API 端點。這些方法使用 ai_task_request 函式向 AI 發出任務請求,並根據回應進行相應的操作。
     async fn call_initial_backend_code(&mut self, factsheet: &mut FactSheet) {
         let code_template_str: String = read_code_template_contents();
 
@@ -121,6 +131,20 @@ impl AgentBackendDeveloper {
     }
 }
 
+
+
+
+
+
+// 這裡為 AgentBackendDeveloper 實作了 SpecialFunctions trait,
+// 定義了 get_attributes_from_agent 方法來獲取 agent 的基本屬性,以及 execute 方法來執行 agent 的主要任務。
+
+// 在 execute 方法中,while迴圈會根據 agent 的狀態執行不同的操作,包括:
+// Discovery: 呼叫 call_initial_backend_code 生成初始後端程式碼。
+// Working: 根據錯誤計數呼叫 call_improved_backend_code 或 call_fix_code_bugs 來改進程式碼或修復錯誤。
+// UnitTesting: 執行單元測試,包括確認程式碼安全性,構建專案,提取 API 端點,並測試端點的可訪問性。
+
+
 #[async_trait]
 impl SpecialFunctions for AgentBackendDeveloper {
     fn get_attributes_from_agent(&self) -> &BasicAgent {
@@ -149,6 +173,8 @@ impl SpecialFunctions for AgentBackendDeveloper {
                     continue;
                 }
 
+
+               // 如果在單元測試過程中發現太多錯誤,程式會 panic 並退出。如果一切正常,agent 的狀態會變為 Finished,並返回 Ok(())。
                 AgentState::UnitTesting => {
                     // Guard:: ENSURE AI SAFETY
                     PrintCommand::UnitTest.print_agent_message(
@@ -206,10 +232,6 @@ impl SpecialFunctions for AgentBackendDeveloper {
                         continue;
                     }
 
-                    /*
-                      Extract and Test
-                      Rest API Endpoints
-                    */
 
                     // Extract API Endpoints
                     let api_endpoints_str: String = self.call_extract_rest_api_endpoints().await;
@@ -321,6 +343,9 @@ impl SpecialFunctions for AgentBackendDeveloper {
     }
 }
 
+
+// 測試模組,定義了一個名為 tests_backend_developer 的非同步測試函式。
+// 它創建了一個 AgentBackendDeveloper 實例,並使用一個預定義的 factsheet 來執行 agent,測試整個流程是否正常工作。
 #[cfg(test)]
 mod tests {
     use super::*;
