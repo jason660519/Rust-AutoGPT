@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+predicates = "1.0"
+colored = "2.0.0"
+
 
 # 用於從 .env 文件加載環境變量的庫
 dotenv = "0.15.0"
@@ -37,3 +40,7 @@ strum_macros = "0.24.3"
 
 # 提供AI相關功能的一個庫
 ai_functions = "0.1.1"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "1.0"
