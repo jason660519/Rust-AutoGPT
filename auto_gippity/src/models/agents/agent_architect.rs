@@ -2,7 +2,6 @@
 // 这代理通过循环不同的状态（如“发现”和“单元测试”），根据项目描述和外部网址的检测情况来更新项目事实表(FactSheet)。
 // 通过这样的结构，它演示了一个能够在网站开发中收集和处理必要信息的自动化流程。
 
-
 // 引入所需的crate庫和模組
 use crate::ai_functions::aifunc_architect::{print_project_scope, print_site_urls};
 use crate::helpers::command_line::PrintCommand;
@@ -10,6 +9,7 @@ use crate::helpers::general::{ai_task_request_decoded, check_status_code};
 use crate::models::agent_basic::basic_agent::{AgentState, BasicAgent};
 use crate::models::agent_basic::basic_traits::BasicTraits;
 use crate::models::agents::agent_traits::{FactSheet, ProjectScope, SpecialFunctions};
+
 use async_trait::async_trait;
 use reqwest::Client;
 use std::time::Duration;
@@ -25,8 +25,7 @@ impl AgentSolutionArchitect {
     // 構造器，初始化解決方案架構師的屬性
     pub fn new() -> Self {
         let attributes: BasicAgent = BasicAgent {
-            objective: "Gathers information and design solutions for website development"
-                .to_string(),
+            objective: "Gathers information and design solutions for website development".to_string(),
             position: "Solutions Architect".to_string(),
             state: AgentState::Discovery,
             memory: vec![],
@@ -53,11 +52,7 @@ impl AgentSolutionArchitect {
     }
 
     // 检索项目中的外部URL的异步方法
-    async fn call_determine_external_urls(
-        &mut self,
-        factsheet: &mut FactSheet,
-        msg_context: String,
-    ) {
+    async fn call_determine_external_urls(&mut self,factsheet: &mut FactSheet,msg_context: String,) {
         let ai_response: Vec<String> = ai_task_request_decoded::<Vec<String>>(
             msg_context,
             &self.attributes.position,
@@ -84,10 +79,8 @@ impl SpecialFunctions for AgentSolutionArchitect {
     }
 
     // 执行函数定义
-    async fn execute(
-        &mut self,
-        factsheet: &mut FactSheet,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    async fn execute(&mut self,factsheet: &mut FactSheet,) -> Result<(), Box<dyn std::error::Error>> {
+
         // !!! WARNING - BE CAREFUL OF INFINITATE LOOPS !!!
         while self.attributes.state != AgentState::Finished {
             match self.attributes.state {
@@ -96,11 +89,7 @@ impl SpecialFunctions for AgentSolutionArchitect {
 
                     // Confirm if external urls  判断是否需要外部URLs
                     if project_scope.is_external_urls_required {
-                        self.call_determine_external_urls(
-                            factsheet,
-                            factsheet.project_description.clone(),
-                        )
-                        .await;
+                        self.call_determine_external_urls(factsheet, factsheet.project_description.clone(),).await;
                         self.attributes.state = AgentState::UnitTesting;
                     }
                 }
@@ -115,17 +104,13 @@ impl SpecialFunctions for AgentSolutionArchitect {
 
                     // Defining urls to check  定义要检查的urls
                     let urls: &Vec<String> = factsheet
-                        .external_urls
-                        .as_ref()
-                        .expect("No URL object on factsheet");
+                        .external_urls.as_ref().expect("No URL object on factsheet");
 
                     // Find faulty urls  查找故障的urls
                     for url in urls {
                         let endpoint_str: String = format!("Testing URL Endpoint: {}", url);
                         PrintCommand::UnitTest.print_agent_message(
-                            self.attributes.position.as_str(),
-                            endpoint_str.as_str(),
-                        );
+                            self.attributes.position.as_str(),endpoint_str.as_str(),);
 
                         // Perform URL Test  执行URL测试
                         match check_status_code(&client, url).await {
@@ -183,10 +168,7 @@ mod tests {
       api_endpoint_schema: None,
     };
 
-        agent
-            .execute(&mut factsheet)
-            .await
-            .expect("Unable to execute Solutions Architect Agent");
+        agent.execute(&mut factsheet).await.expect("Unable to execute Solutions Architect Agent");
         assert!(factsheet.project_scope != None);
         assert!(factsheet.external_urls.is_some());
 

@@ -17,19 +17,20 @@ use std::fs;
 // 引入标准库std::fs，用于文件系统操作。
 
 // 常量CODE_TEMPLATE_PATH，定义代码模板的文件路径。
-const CODE_TEMPLATE_PATH: &str =
-    "/Users/shaun/Code/TUTORIALS/rust_autogpt/web_template/src/code_template.rs";
+const CODE_TEMPLATE_PATH: &str = r"C:\Users\a0922\Desktop\rust\rust_autogpt/web_template/src/code_template.rs";
 
 // 常量WEB_SERVER_PROJECT_PATH，定义Web服务器项目的文件路径。
-pub const WEB_SERVER_PROJECT_PATH: &str = "/Users/shaun/Code/TUTORIALS/rust_autogpt/web_template/";
+pub const WEB_SERVER_PROJECT_PATH: &str = r"C:\Users\a0922\Desktop\rust\rust_autogpt\web_template\";
 
 // 常量EXEC_MAIN_PATH，定义可执行文件main.rs的文件路径。
-pub const EXEC_MAIN_PATH: &str =
-    "/Users/shaun/Code/TUTORIALS/rust_autogpt/web_template/src/main.rs";
+pub const EXEC_MAIN_PATH: &str = r"C:\Users\a0922\Desktop\rust\rust_autogpt\auto_gippity\src\main.rs";
+    
 
 // 常量API_SCHEMA_PATH，定义API模式文件的文件路径。
-const API_SCHEMA_PATH: &str =
-    "/Users/shaun/Code/TUTORIALS/rust_autogpt/auto_gippity/schemas/api_schema.json";
+const API_SCHEMA_PATH: &str = r"C:\Users\a0922\Desktop\rust\rust_autogpt/auto_gippity/schemas/api_schema.json";
+
+
+
 
 // 扩展AI函数以鼓励特定输出
 pub fn extend_ai_function(ai_func: fn(&str) -> &'static str, func_input: &str) -> Message {
@@ -152,27 +153,11 @@ mod tests {
         assert!(res.len() > 20);
     }
 }
-// #[tokio::test]
-//     async fn tests_ai_task_request(){
-//         let ai_func_param:String = "Build me a webserver for making stock price api requests.".to_string();
-//         let res=ai_task_request(
-//             ai_func_param,
-//             "Managing Agent",
-//             "Defining user requirements",
-//         convert_user_input_to_goal
-//         ).await;
-//         assert!(res.len()>20);
-//     }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//     use crate::ai_functions::aifunc_managing::convert_user_input_to_goal;
 
-//     #[test]
-//     fn tests_extending_ai_function() {
-//         let extended_msg: Message = extend_ai_function(convert_user_input_to_goal, "dummy variable");
-//         dbg!(&extended_msg);
-//         assert_eq!(extended_msg.role, "system".to_string());
-//     }
-// }
+// function_pass: for<'a> fn(&'a str) -> &'static str 是一个函数指针，接受一个 
+// &str（字符串切片）作为输入，返回一个  'static  生命周期的  &str（字符串切片）。这里的 
+// for<'a>  定义了一个泛型生命周期参数  'a ，允许函数指针接受  &'a str  类型的参数，
+// 其中 'a  由调用者决定。这个函数指针的目的是允许  ai_task_request_decoded
+//  函数调用一个特定的函数并使用其输出，而不需要了解该函数的详情。这使得 
+// ai_task_request_decoded  函数更加灵活和可重用，因为它可以和不同的具有相同签名的函数一起使用。
